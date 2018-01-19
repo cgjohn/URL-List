@@ -1,0 +1,60 @@
+.link-container {
+	width: 60%;
+	height: 15%;
+	background-color: #B6BABE;
+	border-radius: 3px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin: 15px auto;
+	border: 4px solid #1b7397;
+}
+
+.row {
+	width: 100%;
+}
+
+.link-content {
+	margin-left: 20%;
+}
+
+.upvote-container {
+	height: 100%;
+	display: flex;
+	width: auto;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	margin-right: 20%;
+}
+
+.thumbs-up {
+	display: inline-block;
+	height: 30px;
+}
+
+.thumbs-up:active {
+	height: 29px;
+	opacity: .7;
+}
+
+.number-upvotes {
+	display: inline-block;
+	font-size: 1rem;
+	margin: 0;
+}
+
+@media(max-height: 480px){
+	.thumbs-up {
+		height: 20px;
+	}
+
+	.thumbs-up:active {
+		height: 19px;
+	}
+
+	.number-upvotes {
+		font-size: .8rem;
+	}
+}
+
