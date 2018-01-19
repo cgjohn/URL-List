@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import './input.css';
-import PropTypes from 'prop-types';
 
 class Input extends Component{
 	constructor(props){
@@ -15,7 +14,6 @@ class Input extends Component{
 	}
 
 	handleInput(event){
-		console.log(event);
 		this.setState({
 			inputContent: event.target.value,
 		})

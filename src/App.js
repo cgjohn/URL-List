@@ -15,28 +15,31 @@ class App extends Component {
     }
 
     this.app = firebase.initializeApp(DB_CONFIG);
-    this.db = this.app.database().ref().child('links');
+    this.listRef = this.app.database().ref().child('links');
 
     this.addLink = this.addLink.bind(this)
     this.removeLink = this.removeLink.bind(this)
+    this.updateVotes = this.updateVotes.bind(this)
 
   }
 
-  componentWillMount(){
+  componentDidMount(){
     const prevLinks = this.state.links;
 
-    this.db.on('child_added', snap => {
+    this.listRef.on('child_added', snap => {
       prevLinks.push({
         id: snap.key,
         linkContent: snap.val().linkContent,
+        linkUpvotes: snap.val().upvotes
       })
 
       this.setState({
         links: prevLinks
       })
+      this.forceUpdate()
     })
 
-    this.db.on('child_removed', snap => {
+    this.listRef.on('child_removed', snap => {
       //loop through array to find matching erased id
       for(var i=0; i < prevLinks.length; i ++){
         if(prevLinks[i].id === snap.key) {
@@ -47,17 +50,49 @@ class App extends Component {
       this.setState({
         links: prevLinks
       })
+
+    })
+
+    this.listRef.on('child_changed', snap => {
+      //loop through array to find matching erased id
+      for(var i=0; i < prevLinks.length; i ++){
+        // console.log('snap key = '+ snap.key + "// length = " + prevLinks.length)
+
+        if(prevLinks[i].id === snap.key) {
+          prevLinks[i].linkUpvotes += 1;
+        }
+      }
+
+      this.setState({
+        links: prevLinks
+      })
     })
   }
 
   addLink(link){
-    this.db.push().set({ linkContent: link })
+    this.listRef.push().set({ linkContent: link, upvotes: 0 })
   }
 
   removeLink(linkId){
-    this.db.child(linkId).remove();
+    this.listRef.child(linkId).remove();
   }
 
+  updateVotes(linkId){
+
+    const prevLinks = this.state.links;
+    for(var i=0; i < prevLinks.length; i ++){
+      if(prevLinks[i].id === linkId) {
+        prevLinks[i].linkUpvotes;
+        var incrementedVote = prevLinks[i].linkUpvotes + 1;
+      }
+    }
+
+    var update = {}
+    update['upvotes'] = incrementedVote;
+
+    this.listRef.child(linkId).update(update);
+  } 
+  
   render() {
     return (
       <div className="LinksApp">
@@ -69,9 +104,17 @@ class App extends Component {
 
         <div className="links-container">
           {
+
             this.state.links.map((link) => {
+              console.log("upvotes being passed in" + link.linkUpvotes);
               return (
-                <Link removeLink={this.removeLink} linkContent={link.linkContent} linkId={link.id} key={link.id}/>
+                <Link 
+                  updateVotes={ this.updateVotes }
+                  removeLink={ this.removeLink } 
+                  linkContent={ link.linkContent }
+                  linkUpvotes={ link.linkUpvotes } 
+                  linkId={ link.id } 
+                  key={ link.id }/>
               )
             })
           }

@@ -16,6 +16,8 @@
 
 .link-content {
 	margin-left: 20%;
+	font-size: 1.5rem;
+	overflow-y: hidden;
 }
 
 .upvote-container {
